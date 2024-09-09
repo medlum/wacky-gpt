@@ -12,10 +12,18 @@ from utils_agent_tools import *
 from utils_prompt import *
 from utils_tts import *
 from news_btn_options_utils import *
+
+
+# ---------set up page config -------------#
+st.set_page_config(page_title="Wacky-GPT",
+                   layout="wide", page_icon="👾")
+
+st.markdown("<p style='text-align: center; font-size:1.2rem; color:#6b6a67'>Mary Sillius Maximus</p>",
+            unsafe_allow_html=True)
+
 # ---- set up creative chat history ----#
 chat_msg = StreamlitChatMessageHistory(key="chat_key")
 chat_history_size = 5
-
 
 # Set up LLM for factual mode
 llama3p1_70B = "meta-llama/Meta-Llama-3.1-70B-Instruct"
@@ -50,38 +58,33 @@ executor = AgentExecutor(
     agent_kwargs=agent_kwargs,
 )
 
-
-for index, msg in enumerate(chat_msg.messages):
-    if index % 2 == 0:
-        message(msg.content.replace('<|eot_id|>', ''),
-                is_user=True, key=f"user{index}",
-                avatar_style="big-ears", seed="Angel")
-    else:
-        message(msg.content.replace('<|eot_id|>', ''),
-                is_user=False, key=f"bot{index}",
-                avatar_style="big-ears", seed="Salem")
-
-
 if prompt := st.chat_input("Ask me a question..."):
-    message(prompt, is_user=True,
-            avatar_style="big-ears", seed="Angel")
+    response = executor.invoke(
+        {'input': f'{prompt}<|eot_id|>'})
+    response = str(
+        response['output'].replace('<|eot_id|>', ''))
 
-    with st.spinner("Zzz..."):
-        response = executor.invoke(
-            {'input': f'{prompt}<|eot_id|>'})
-        response = str(
-            response['output'].replace('<|eot_id|>', ''))
-        message(response,
-                allow_html=True,
-                is_table=True,
-                avatar_style="big-ears",
-                seed="Salem")
+    with st.container(height=430):
+        for index, msg in enumerate(chat_msg.messages):
+            if index % 2 == 0:
+                message(msg.content.replace('<|eot_id|>', ''),
+                        is_user=True, key=f"user{index}",
+                        avatar_style="big-ears", seed="Angel")
+            else:
+                message(msg.content.replace('<|eot_id|>', ''),
+                        is_user=False,
+                        key=f"bot{index}",
+                        avatar_style="big-ears",
+                        seed="Salem",
+                        allow_html=True,
+                        is_table=True,)
 
-    if response.find('iframe') == -1 and response.find('img') == -1:
+        if response.find('iframe') == -1 and response.find('img') == -1:
 
-        col1, col2 = st.columns([1, 2])
+            col1, col2 = st.columns([1, 3])
 
-        with st.spinner("Audio..."):
-            txt2speech(response)
-            # st.markdown("🎧 Audio")
-            col1.audio("audio.mp3", autoplay=True, format="audio/mpeg")
+            with st.spinner("Audio..."):
+                txt2speech(response)
+                col1, col2 = st.columns([1, 3])
+                col1.audio("audio.mp3", autoplay=True, format="audio/mpeg")
+
