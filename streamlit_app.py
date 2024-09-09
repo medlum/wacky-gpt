@@ -64,7 +64,7 @@ if prompt := st.chat_input("Ask me a question..."):
     response = str(
         response['output'].replace('<|eot_id|>', ''))
 
-    with st.container(height=430):
+    with st.container(height=380):
         for index, msg in enumerate(chat_msg.messages):
             if index % 2 == 0:
                 message(msg.content.replace('<|eot_id|>', ''),
