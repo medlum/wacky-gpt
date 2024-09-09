@@ -91,12 +91,12 @@ def query_bravesearch_image(query: str):
 
     try:
         img_path = data["results"][0]["properties"]["url"]
-        return f'<img width="100%" height="320" src="{img_path}"/>'
+        return f'<img width="100%" src="{img_path}"/>'
     except IndexError:
         return "Try again later"
 
     # img_path = data["results"][0]["properties"]["url"]
-    # return f'<img width="100%" height="320" src="{img_path}"/>'
+    # return f'<img width="100%" height="100%" src="{img_path}"/>'
 
 
 img_search_tool = StructuredTool.from_function(
@@ -149,7 +149,7 @@ def youTubeSearch(query: str):
         link = key['link'][32:]
         # src = f"https://www.youtube.com/embed/{link}"
 
-    return f'<iframe width="400" height="215" src="https://www.youtube.com/embed/{link}" title="YouTube video player" frameborder="0" allow="accelerometer; encrypted-media;"></iframe>'
+    return f'<iframe width="100%" src="https://www.youtube.com/embed/{link}" title="YouTube video player" frameborder="0" allow="accelerometer; encrypted-media;"></iframe>'
 
 
 youTubeSearch_tool = StructuredTool.from_function(
