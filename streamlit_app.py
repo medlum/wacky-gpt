@@ -84,4 +84,4 @@ if prompt := st.chat_input("Ask me a question..."):
         with st.spinner("Audio..."):
             txt2speech(response)
             # st.markdown("🎧 Audio")
-            col1.audio("audio.mp3", autoplay=True)
+            col1.audio("audio.mp3", autoplay=True, format="audio/mpeg")
