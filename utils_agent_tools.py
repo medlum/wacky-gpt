@@ -91,7 +91,7 @@ def query_bravesearch_image(query: str):
 
     try:
         img_path = data["results"][0]["properties"]["url"]
-        return f'<img width="100%" src="{img_path}"/>'
+        return f'<img width="100%" height="100%" src="{img_path}"/>'
     except IndexError:
         return "Try again later"
 
