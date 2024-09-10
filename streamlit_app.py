@@ -117,7 +117,7 @@ for index, msg in enumerate(chat_msg.messages):
                                 key=f"bot_clear{index}")
 
         if clear_btn == " ":
-            chat_msg.clear()
+            chat_msg.messages.clear()
 
 
 # ---------set up for creative mode  -------------#
