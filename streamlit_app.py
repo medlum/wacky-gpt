@@ -28,8 +28,7 @@ with bottom():
                             align='left',
                             variant='link',
                             index=None,
-                            label=" ",
-                            key=f"bot_clear{index}")
+                            label=" ")
 
 
 # ---- set up creative chat history ----#
