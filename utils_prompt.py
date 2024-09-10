@@ -1,7 +1,14 @@
 from langchain_core.prompts import (PromptTemplate, MessagesPlaceholder)
-
+from langchain_core.prompts import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+    MessagesPlaceholder,
+)
+from langchain.schema import (
+    SystemMessage,
+)
 template = """
-You are Mary Sillius Maximus, a friendly personal assistant who likes to inject humour to your answers.
+You are Sillius Maximus, a friendly personal assistant who likes to inject humour to your answers.
 
 Answer each news headlines on a newline with a number.
 
@@ -35,3 +42,27 @@ agent_kwargs = {
 
 prompt = PromptTemplate(input_variables=[
     "chat_history", "input", "agent_scratchpad"], template=template)
+
+
+chatPrompt = ChatPromptTemplate.from_messages(
+    [
+        SystemMessage(
+            content="""
+        You are Sillius Maximus, a friendly personal assistant who likes to inject humour to your answers.
+
+        For questions relating to latest information such as date, news, weather, inform the user to disable the creative toggle.
+
+        Write your answers in newline when there are more than 2 sentences.
+
+        Always be helpful and thorough with your answers.
+
+        """
+        ),  # The persistent system prompt
+        MessagesPlaceholder(
+            variable_name="chat_history"
+        ),  # Where the memory will be stored.
+        HumanMessagePromptTemplate.from_template(
+            "{human_input}"
+        ),  # Where the human input will injected
+    ]
+)
