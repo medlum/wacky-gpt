@@ -98,7 +98,7 @@ if 'initial_msg' not in st.session_state:
 if st.session_state.initial_msg == 0:
     part_day = get_time_bucket()
     # welcome = f"{part_day} I'm Sillius Maximus! I'm generally more expressive in <strong>creative mode</strong>. If you like to ask about latest information like the news, weather, images or even videos, just toggle off the creative mode 👇🏼.How about some latest news headlines to start your day?"
-    welcome = f"{part_day} I'm Sillius Maximus! Ask me for the latest information like news, weather, images or even videos when creative mode toggle is turned off 👇🏼. But if you like me to be creative or expressive, just toggle back on the creative mode! Now, how about some latest news headlines to start your day?"
+    welcome = f"{part_day} I'm Sillius Maximus! I can tell you the latest information like news, weather, images or even videos when the <strong>Creative Mode</strong> is turned off 👇🏼. If you like a more expressive conversation, just toggle back on the Creative Mode! Now, how about some news headlines to start your day?"
     chat_msg.add_ai_message(welcome)
 # ------ set up message from chat history  -----#
 
