@@ -11,24 +11,21 @@ from langchain.agents import AgentExecutor, create_react_agent
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain_huggingface import HuggingFaceEndpoint
 from langchain.chains import LLMChain
+from streamlit_lottie import st_lottie
+from streamlit.components.v1 import html
 
 # ---------set up page config -------------#
 st.set_page_config(page_title="Wacky-GPT",
                    layout="wide", page_icon="👾")
 
 # ---------set up page header -------------#
-st.markdown("<p style='text-align: center; font-size:1.2rem; color:#6b6a67'>Sillius Maximus</p>",
-            unsafe_allow_html=True)
+# st.markdown("<p style='text-align: center; font-size:1.2rem; color:#6b6a67'>Sillius Maximus</p>",
+#            unsafe_allow_html=True)
+
 
 # ---------set up toggle at the bottom -------------#
 with bottom():
     mode_toggle = st.toggle("Creative")
-    # ---------clear history  -------------#
-#    clear_btn = sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='x-circle', size=20))],
-#                            align='left',
-#                            variant='link',
-#                            index=None,
-#                            label=" ")
 
 
 # ---- set up creative chat history ----#
@@ -97,12 +94,20 @@ chat_llm_chain = LLMChain(
 
 # ------ set up message from chat history  -----#
 
+
+def clear_msg():
+    # clear chat messages
+    chat_msg.clear()
+
+
 for index, msg in enumerate(chat_msg.messages):
     # user's message
     if index % 2 == 0:
+
         message(msg.content.replace('<|eot_id|>', ''),
                 is_user=True, key=f"user{index}",
                 avatar_style="big-ears", seed="Angel")
+
     # bot's message
     else:
         message(msg.content.replace('<|eot_id|>', '').replace("assistant", "").replace('Human:', ''),
@@ -113,9 +118,17 @@ for index, msg in enumerate(chat_msg.messages):
                 allow_html=True,
                 is_table=True,)
 
-#if clear_btn == " ":
-#    chat_msg.messages.clear()
+        # ---------clear history  -------------#
+        clear_btn = sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='x-circle', size=20))],
+                                align='left',
+                                variant='link',
+                                index=None,
+                                label=" ",
+                                key=f"clear_msg{index}")
 
+        # if clear_btn clicked, clear chat messages
+        if clear_btn is not None:
+            chat_msg.clear()
 
 # ---------set up for creative mode  -------------#
 if mode_toggle:
@@ -149,7 +162,7 @@ if prompt := st.chat_input("Ask me a question..."):
         # show message
         message(edited_response,
                 is_user=False,
-                key=f"bot",
+                key=f"bot_1",
                 avatar_style="big-ears",
                 seed="Salem",
                 allow_html=True,
@@ -179,7 +192,7 @@ if prompt := st.chat_input("Ask me a question..."):
         # show message
         message(edited_response,
                 is_user=False,
-                key=f"bot",
+                key=f"bot_2",
                 avatar_style="big-ears",
                 seed="Salem",
                 allow_html=True,
