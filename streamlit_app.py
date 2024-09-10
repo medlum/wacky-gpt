@@ -24,11 +24,11 @@ st.markdown("<p style='text-align: center; font-size:1.2rem; color:#6b6a67'>Sill
 with bottom():
     mode_toggle = st.toggle("Creative")
     # ---------clear history  -------------#
-    clear_btn = sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='x-circle', size=20))],
-                            align='left',
-                            variant='link',
-                            index=None,
-                            label=" ")
+#    clear_btn = sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='x-circle', size=20))],
+#                            align='left',
+#                            variant='link',
+#                            index=None,
+#                            label=" ")
 
 
 # ---- set up creative chat history ----#
@@ -113,10 +113,8 @@ for index, msg in enumerate(chat_msg.messages):
                 allow_html=True,
                 is_table=True,)
 
-
-
-if clear_btn == " ":
-    chat_msg.messages.clear()
+#if clear_btn == " ":
+#    chat_msg.messages.clear()
 
 
 # ---------set up for creative mode  -------------#
