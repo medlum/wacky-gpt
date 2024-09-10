@@ -18,11 +18,6 @@ from streamlit.components.v1 import html
 st.set_page_config(page_title="Wacky-GPT",
                    layout="wide", page_icon="👾")
 
-# ---------set up page header -------------#
-# st.markdown("<p style='text-align: center; font-size:1.2rem; color:#6b6a67'>Sillius Maximus</p>",
-#            unsafe_allow_html=True)
-
-
 # ---------set up toggle at the bottom -------------#
 with bottom():
     mode_toggle = st.toggle("Creative")
@@ -54,7 +49,8 @@ conversational_memory = ConversationBufferMemory(
     memory_key='chat_history',
     chat_memory=chat_msg,
     k=chat_history_size,
-    return_messages=True)
+    return_messages=True
+)
 
 # ---------set up agent with tools  -------------#
 react_agent = create_react_agent(llm_factual, toolkit, prompt)
@@ -92,24 +88,23 @@ chat_llm_chain = LLMChain(
     memory=conversational_memory,
 )
 
+# ------ initial welcome message -------#
+
+# set initial_msg as a gate to display welcome message
+if 'initial_msg' not in st.session_state:
+    st.session_state.initial_msg = 0
+
+# if 0, add welcome message to chat_msg
+if st.session_state.initial_msg == 0:
+    welcome = "Hi there! I'm Sillius Maximus! What can I do for you today?"
+    chat_msg.add_ai_message(welcome)
+
 # ------ set up message from chat history  -----#
 
-
-def clear_msg():
-    # clear chat messages
-    chat_msg.clear()
-
-
 for index, msg in enumerate(chat_msg.messages):
-    # user's message
+
+    # bot's message is in even position as welcome message is added at initial
     if index % 2 == 0:
-
-        message(msg.content.replace('<|eot_id|>', ''),
-                is_user=True, key=f"user{index}",
-                avatar_style="big-ears", seed="Angel")
-
-    # bot's message
-    else:
         message(msg.content.replace('<|eot_id|>', '').replace("assistant", "").replace('Human:', ''),
                 is_user=False,
                 key=f"bot{index}",
@@ -118,21 +113,34 @@ for index, msg in enumerate(chat_msg.messages):
                 allow_html=True,
                 is_table=True,)
 
-        # ---------clear history  -------------#
+    # user's message is in odd position
+    else:
+        message(msg.content.replace('<|eot_id|>', ''),
+                is_user=True, key=f"user{index}",
+                avatar_style="big-ears", seed="Angel")
+
+        # -----clear history -----#
+        # add a clear_btn
         clear_btn = sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='x-circle', size=20))],
                                 align='left',
                                 variant='link',
                                 index=None,
                                 label=" ",
-                                key=f"clear_msg{index}")
+                                key=f"clear_msg{index}"
+                                )
 
-        # if clear_btn clicked, clear chat messages
+        # clear chat_msg and
+        # set initial_msg to 1 to stop welcome message
         if clear_btn is not None:
             chat_msg.clear()
 
+    # set initial_msg to 0 in first loop
+    if index == 0:
+        st.session_state.initial_msg = 1
+
 # ---------set up for creative mode  -------------#
 if mode_toggle:
-    # initialize response as creative
+    # initialize response type as creative
     response_type = "creative"
 else:
     # initialize response type as agents
