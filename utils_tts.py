@@ -13,3 +13,15 @@ def txt2speech(text):
 
     with open('audio.mp3', 'wb') as file:
         file.write(response.content)
+
+
+def get_time_bucket():
+    now = datetime.datetime.now()
+    hour = now.hour
+
+    if hour < 12:
+        return "Good morning!"
+    elif hour < 17:
+        return "Good afternoon!"
+    else:
+        return "Good evening!"
