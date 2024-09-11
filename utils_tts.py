@@ -1,6 +1,10 @@
+import datetime
 import requests
 import streamlit as st
-import datetime
+import pytz
+
+
+# --------- huggingface api inference for text to speech ----------#
 
 def txt2speech(text):
     print("Initializing text-to-speech conversion...")
@@ -15,13 +19,18 @@ def txt2speech(text):
         file.write(response.content)
 
 
-def get_time_bucket():
-    now = datetime.datetime.now()
-    hour = now.hour
+# --------- bucket time for chatbot greetings  ----------#
 
-    if hour < 12:
-        return "Good morning!"
-    elif hour < 17:
-        return "Good afternoon!"
+def get_time_bucket():
+
+    gmt = pytz.timezone('GMT')
+    now_gmt = datetime.datetime.now(gmt)
+    hour = now_gmt.hour  # now = datetime.datetime.now()
+    sg_time = 8  # Singapore is UTC+8
+
+    if hour + sg_time < 12:
+        return "Good morning"
+    elif hour + sg_time < 17:
+        return "Good afternoon"
     else:
-        return "Good evening!"
+        return "Good evening"
