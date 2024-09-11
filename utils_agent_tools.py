@@ -69,7 +69,7 @@ def news_headlines(genre: str):
 news_tool = StructuredTool.from_function(
     func=news_headlines,
     name="news_headlines",
-    description="use this function to provide news headlines"
+    description="use this function to provide news headlines in singapore and the world"
 )
 
 
@@ -117,11 +117,32 @@ img_search_tool = StructuredTool.from_function(
     description="use this function to search for image url and put the url into html."
 )
 
+# --------- video search tools ------------#
 
-# ---- weather forecast ---#
+
+def youTubeSearch(query: str):
+
+    videosSearch = VideosSearch(query, limit=1)
+    search = videosSearch.result()
+
+    for key in search["result"]:
+        link = key['link'][32:]
+        # src = f"https://www.youtube.com/embed/{link}"
+
+    # width="100%" height="100%" to fit mobile
+    return f'<iframe width="100%" height="100%" src="https://www.youtube.com/embed/{link}" title="YouTube video player" frameborder="0" allow="accelerometer; encrypted-media;"></iframe>'
+
+
+youTubeSearch_tool = StructuredTool.from_function(
+    func=youTubeSearch,
+    name='youTubeSearch',
+    description="Use this tool to play YouTube videos"
+)
+
+
+# ------ weather forecast -------#
 
 # nea api - 4 days forecast
-
 
 def weather4days(url):
     url = "https://api-open.data.gov.sg/v2/real-time/api/four-day-outlook"
@@ -152,23 +173,6 @@ weather24hr_tool = StructuredTool.from_function(
     description="Use this tool to find out the weather forecast in the next 24 hour in singapore"
 )
 
-
-def youTubeSearch(query: str):
-
-    videosSearch = VideosSearch(query, limit=1)
-    search = videosSearch.result()
-    for key in search["result"]:
-        link = key['link'][32:]
-        # src = f"https://www.youtube.com/embed/{link}"
-
-    return f'<iframe width="400" height="215" src="https://www.youtube.com/embed/{link}" title="YouTube video player" frameborder="0" allow="accelerometer; encrypted-media;"></iframe>'
-
-
-youTubeSearch_tool = StructuredTool.from_function(
-    func=youTubeSearch,
-    name='youTubeSearch',
-    description="Use this tool to play YouTube videos"
-)
 
 toolkit = [weather4days_tool,
            weather24hr_tool,
