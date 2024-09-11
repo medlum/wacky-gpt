@@ -4,15 +4,14 @@ from utils_agent_tools import *
 from utils_prompt import *
 from utils_tts import *
 from streamlit_extras.bottom_container import bottom
-# from utils_llm import *
 import streamlit_antd_components as sac
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain_huggingface import HuggingFaceEndpoint
 from langchain.chains import LLMChain
-from streamlit_lottie import st_lottie
-from streamlit.components.v1 import html
+import re
+from st_copy_to_clipboard import st_copy_to_clipboard
 
 # ---------set up page config -------------#
 st.set_page_config(page_title="Wacky-GPT",
@@ -96,9 +95,8 @@ if 'initial_msg' not in st.session_state:
 
 # if 0, add welcome message to chat_msg
 if st.session_state.initial_msg == 0:
-    part_day = get_time_bucket()
-    # welcome = f"{part_day} I'm Sillius Maximus! I'm generally more expressive in <strong>creative mode</strong>. If you like to ask about latest information like the news, weather, images or even videos, just toggle off the creative mode 👇🏼.How about some latest news headlines to start your day?"
-    welcome = f"{part_day} I'm Sillius Maximus! I can give you the latest information like news, weather, images or even videos when the <strong>Creative Mode</strong> is turned off 👇🏼. If you like a more expressive conversation, just toggle back on the Creative Mode! Now, how about some news headlines to start your day?"
+    part_day = get_time_bucket()  # located at utils_tts.py
+    welcome = f"{part_day} from Singapore! I'm Sillius Maximus! How about some news headlines or weather forecast to start your day?"
     chat_msg.add_ai_message(welcome)
 # ------ set up message from chat history  -----#
 
@@ -120,20 +118,21 @@ for index, msg in enumerate(chat_msg.messages):
                 is_user=True, key=f"user{index}",
                 avatar_style="big-ears", seed="Angel")
 
-        # -----clear history -----#
-        # add a clear_btn
-        clear_btn = sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='x-circle', size=20))],
-                                align='left',
-                                variant='link',
-                                index=None,
-                                label=" ",
-                                key=f"clear_msg{index}"
-                                )
+    # -----clear history -----#
+    # add a clear_btn
+    clear_btn = sac.buttons([sac.ButtonsItem(icon=sac.BsIcon(name='x-circle', size=20))],
+                            align='left',
+                            variant='link',
+                            index=None,
+                            label=" ",
+                            key=f"clear_msg{index}"
+                            )
 
-        # clear chat_msg and
-        # set initial_msg to 1 to stop welcome message
-        if clear_btn is not None:
-            chat_msg.clear()
+    # - clear chat_msg
+    # - set initial_msg to 1 to stop welcome message
+    if clear_btn is not None:
+        chat_msg.messages.pop(-1)
+        # chat_msg.clear()
 
     # set initial_msg to 0 in first loop
     if index == 0:
@@ -195,8 +194,11 @@ if prompt := st.chat_input("Ask me a question..."):
             {'human_input': f'{prompt}<|eot_id|>'})
 
         # remove prompt format for better display
-        edited_response = response["text"].replace(
-            "assistant", "").replace('Human:', '')
+        edited_response = response["text"].replace("assistant", "")
+        human = re.search(r"Human:.*|human:.*", edited_response)
+        if human is not None:
+            # exclude "Human:" located at end of string
+            edited_response = edited_response[:human.start()]
 
         # show message
         message(edited_response,
@@ -206,6 +208,8 @@ if prompt := st.chat_input("Ask me a question..."):
                 seed="Salem",
                 allow_html=True,
                 is_table=True,)
+
+        # st_copy_to_clipboard(edited_response)
 
         # audio conversation
         with st.spinner("Audio..."):
