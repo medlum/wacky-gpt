@@ -29,8 +29,8 @@ def get_time_bucket():
     sg_time = 8  # Singapore is UTC+8
 
     if hour + sg_time < 12:
-        return "Good morning"
+        return "Morning greetings!"
     elif hour + sg_time < 17:
-        return "Good afternoon"
+        return "Good afternoon!"
     else:
-        return "Good evening"
+        return "Good evening!"
