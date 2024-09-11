@@ -10,6 +10,7 @@ from langchain.agents import AgentExecutor, create_react_agent
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain_huggingface import HuggingFaceEndpoint
 from langchain.chains import LLMChain
+from huggingface_hub.errors import OverloadedError
 import re
 
 # ---------set up page config -------------#
@@ -162,30 +163,37 @@ if prompt := st.chat_input("Ask me a question..."):
 
         with st.spinner("Generating text and voice..."):
 
-            # use {'input': f'{prompt}<|eot_id|>'})
-            response = executor.invoke(
-                {'input': f'{prompt}<|eot_id|>'})
+            try:
 
-            # remove prompt format for better display
-            edited_response = str(
-                response['output'].replace('<|eot_id|>', ''))
+                # use {'input': f'{prompt}<|eot_id|>'})
+                response = executor.invoke(
+                    {'input': f'{prompt}<|eot_id|>'})
 
-            # show message
-            message(edited_response,
-                    is_user=False,
-                    key=f"bot_1",
-                    avatar_style="big-ears",
-                    seed="Salem",
-                    allow_html=True,
-                    is_table=True)
+                # remove prompt format for better display
+                edited_response = str(
+                    response['output'].replace('<|eot_id|>', ''))
 
-            # audio conversation if response is NOT video or image related
-            if edited_response.find('iframe') == -1 and edited_response.find('img') == -1:
-                col1, col2 = st.columns([1, 3])
-                # with st.spinner("Generating voice..."):
-                txt2speech(edited_response)
-                col1, col2 = st.columns([1, 3])
-                col1.audio("audio.mp3", autoplay=True, format="audio/mpeg")
+                # show message
+                message(edited_response,
+                        is_user=False,
+                        key=f"bot_1",
+                        avatar_style="big-ears",
+                        seed="Salem",
+                        allow_html=True,
+                        is_table=True)
+
+                # audio conversation if response is NOT video or image related
+                if edited_response.find('iframe') == -1 and edited_response.find('img') == -1:
+                    col1, col2 = st.columns([1, 3])
+                    # with st.spinner("Generating voice..."):
+                    txt2speech(edited_response)
+                    col1, col2 = st.columns([1, 3])
+                    col1.audio("audio.mp3", autoplay=True, format="audio/mpeg")
+
+            except OverloadedError as error:
+
+                st.write(
+                    "HuggingFace🤗 inference engine is overloaded now. Try toggling to the creative mode in the meantime.")
 
     # ---- if response_type is creative -----#
 
