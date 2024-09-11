@@ -199,33 +199,40 @@ if prompt := st.chat_input("Ask me a question..."):
 
     elif response_type == "creative":
 
-        # use {'human_input': f'{prompt}<|eot_id|>'})
-        response = chat_llm_chain.invoke(
-            {'human_input': f'{prompt}<|eot_id|>'})
+        with st.spinner("Generating text and voice..."):
 
-        # remove prompt format for better display
-        edited_response = response["text"].replace("assistant", "")
-        human = re.search(r"Human:.*|human:.*", edited_response)
-        if human is not None:
-            # exclude "Human:" located at end of string
-            edited_response = edited_response[:human.start()]
+            try:
 
-        # show message
-        message(edited_response,
-                is_user=False,
-                key=f"bot_2",
-                avatar_style="big-ears",
-                seed="Salem",
-                allow_html=True,
-                is_table=True,)
+                # use {'human_input': f'{prompt}<|eot_id|>'})
+                response = chat_llm_chain.invoke(
+                    {'human_input': f'{prompt}<|eot_id|>'})
 
-        # st_copy_to_clipboard(edited_response)
+                # remove prompt format for better display
+                edited_response = response["text"].replace("assistant", "")
+                human = re.search(r"Human:.*|human:.*", edited_response)
+                if human is not None:
+                    # exclude "Human:" located at end of string
+                    edited_response = edited_response[:human.start()]
 
-        # audio conversation
-        with st.spinner("Audio..."):
-            txt2speech(edited_response)
-            col1, col2 = st.columns([1, 3])
-            col1.audio("audio.mp3", autoplay=True, format="audio/mpeg")
+                # show message
+                message(edited_response,
+                        is_user=False,
+                        key=f"bot_2",
+                        avatar_style="big-ears",
+                        seed="Salem",
+                        allow_html=True,
+                        is_table=True,)
+
+                # st_copy_to_clipboard(edited_response)
+
+                # audio conversation
+                txt2speech(edited_response)
+                col1, col2 = st.columns([1, 3])
+                col1.audio("audio.mp3", autoplay=True, format="audio/mpeg")
+
+            except OverloadedError as error:
+                st.write(
+                    "HuggingFace🤗 inference engine is overloaded now. Try toggling to the creative mode in the meantime.")
 
 
 # if tab == "schedule":
