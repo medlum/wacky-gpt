@@ -34,9 +34,9 @@ llama3p1_70B = "meta-llama/Meta-Llama-3.1-70B-Instruct"
 # initialise LLM for agents and tools
 llm_factual = HuggingFaceEndpoint(
     repo_id=llama3p1_70B,
-    max_new_tokens=1500,
+    max_new_tokens=1000,
     do_sample=False,
-    temperature=0.1,
+    temperature=0.2,
     repetition_penalty=1.1,
     return_full_text=False,
     top_p=0.2,
