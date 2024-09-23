@@ -108,8 +108,8 @@ for index, msg in enumerate(chat_msg.messages):
         message(msg.content.replace('<|eot_id|>', '').replace("assistant", "").replace('Human:', ''),
                 is_user=False,
                 key=f"bot{index}",
-                avatar_style="big-ears",
-                seed="Salem",
+                avatar_style="personas",
+                seed="Angel",
                 allow_html=True,
                 is_table=True,)
 
@@ -117,7 +117,7 @@ for index, msg in enumerate(chat_msg.messages):
     else:
         message(msg.content.replace('<|eot_id|>', ''),
                 is_user=True, key=f"user{index}",
-                avatar_style="big-ears", seed="Angel")
+                avatar_style="personas", seed="Ryker")
 
     # -----clear history -----#
     # add a clear_btn
@@ -154,14 +154,14 @@ if prompt := st.chat_input("Ask me a question..."):
     message(prompt,
             is_user=True,
             key=f"user",
-            avatar_style="big-ears",
-            seed="Angel")
+            avatar_style="personas",
+            seed="Ryker")
 
     # ---- if response_type is agent -----#
 
     if response_type == "agents":
 
-        with st.spinner("Generating text and voice..."):
+        with st.spinner("Generating..."):
 
             try:
 
@@ -177,8 +177,8 @@ if prompt := st.chat_input("Ask me a question..."):
                 message(edited_response,
                         is_user=False,
                         key=f"bot_1",
-                        avatar_style="big-ears",
-                        seed="Salem",
+                        avatar_style="personas",
+                        seed="Angel",
                         allow_html=True,
                         is_table=True)
 
@@ -199,7 +199,7 @@ if prompt := st.chat_input("Ask me a question..."):
 
     elif response_type == "creative":
 
-        with st.spinner("Generating text and voice..."):
+        with st.spinner("Generating..."):
 
             try:
 
@@ -218,8 +218,8 @@ if prompt := st.chat_input("Ask me a question..."):
                 message(edited_response,
                         is_user=False,
                         key=f"bot_2",
-                        avatar_style="big-ears",
-                        seed="Salem",
+                        avatar_style="personas",
+                        seed="Angel",
                         allow_html=True,
                         is_table=True,)
 
