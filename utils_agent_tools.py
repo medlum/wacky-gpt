@@ -13,18 +13,7 @@ import time
 import datetime
 from langchain_community.tools import BraveSearch
 from youtubesearchpython import VideosSearch
-
-# -------- wikipedia --------#
-
-wikipedia = WikipediaAPIWrapper()
-
-wikipedia_tool = Tool(
-    name='wikipedia',
-    func=wikipedia.run,
-    description="Use this function to look up information and knowledge"
-)
-
-
+import io
 # -------- today's date --------#
 
 
@@ -69,7 +58,7 @@ def news_headlines(genre: str):
 news_tool = StructuredTool.from_function(
     func=news_headlines,
     name="news_headlines",
-    description="use this function to provide news headlines in singapore and the world"
+    description="use this function to provide news headlines"
 )
 
 
@@ -114,7 +103,7 @@ def query_bravesearch_image(query: str):
 img_search_tool = StructuredTool.from_function(
     func=query_bravesearch_image,
     name="image_bravesearch",
-    description="use this function to search for image url and put the url into html."
+    description="use this function to find an image url."
 )
 
 # --------- video search tools ------------#
@@ -173,10 +162,28 @@ weather24hr_tool = StructuredTool.from_function(
     description="Use this tool to find out the weather forecast in the next 24 hour in singapore"
 )
 
+# ----- image generation -------#
+
+
+def image_generation(payload):
+    # https://huggingface.co/XLabs-AI/flux-RealismLora
+    API_URL = "https://api-inference.huggingface.co/models/XLabs-AI/flux-RealismLora"
+    headers = {
+        "Authorization": f"Bearer {st.secrets['huggingfacehub_api_token']}"}
+    response = requests.post(API_URL, headers=headers, json=payload)
+    st.image(io.BytesIO(response.content))
+
+
+image_generation_tool = StructuredTool.from_function(
+    func=image_generation,
+    name='image_generation',
+    description="Use this tool to generate image"
+)
 
 toolkit = [weather4days_tool,
            weather24hr_tool,
-           img_search_tool,
+           # img_search_tool,
+           image_generation_tool,
            news_tool,
            time_tool,
            youTubeSearch_tool,
